@@ -3,12 +3,13 @@ INS tables: 3036 core projects, 64174 PMIDs, 13688 GEO/SRA/dbGaP datasets, 271 r
 
 FY2024 NCI new R01 awards in this run: 589; listed in INS: 8
 papers in this run: 2086; PMID listed anywhere in INS: 274; (paper, award) pairs listed in INS: 16 of 2185
-  published before the INS snapshot (2026-01-30): 1567 papers; their (paper, award) pairs listed in INS: 16 of 1639
+  published before the INS snapshot (2026-02-17): 1616 papers; their (paper, award) pairs listed in INS: 16 of 1689
 
 own deposits detected: 1334 (1012 datasets, 322 code/software)
   listed in INS: 135
     datasets INS attributes to the same paper (INS and the tool agree): 102
-    datasets INS attributes only to other papers (likely reused data the wording rules misjudged): 33  {'GEO': 5, 'dbGaP': 28}
+    datasets INS attributes only to other papers (likely reused data the wording rules misjudged): 17  {'GEO': 5, 'dbGaP': 12}
+    datasets INS lists without naming any paper (INS neither confirms nor contradicts the tool): 16  {'dbGaP': 16}
   NOT listed in INS: 1199  (datasets: 877; of those in GEO/SRA/dbGaP: 512, in other repositories: 365)
   resolvable among missing datasets: 840
 

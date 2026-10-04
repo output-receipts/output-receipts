@@ -10,7 +10,8 @@ Output Receipts has two separate parts:
    (about 8% of the FY2024 R01 cohort; this does not change any dataset row) and (b) measure accuracy by judging a
    random sample blind. A human reviewer can do either job instead, using the same instructions.
 
-AI is not part of the tool or of what it proposes; it was used to check the tool. The answers the models gave in
+AI is not part of the tool or of what it proposes; it was used to check the tool and to label the category of
+papers the rules left undecided. The answers the models gave in
 this prototype are kept locally and are not published; their aggregate results are in `VALIDATION.md`.
 
 This repository supplies the AI part as **instructions and plumbing**, not as a dependency: the prompts, the expected
@@ -39,7 +40,7 @@ same `python` line (in cmd.exe: `set OR_BASE_URL=...`).
 OpenAI models through the Codex command line (one line; works in any shell):
 
 ```
-python validate/id_audit.py --population validate/out/ins_missing_datasets.tsv --sample-from validate/out/id_audit_tiers_v2.jsonl --tag _tiers_v2_gpt --cmd "python validate/adapters/codex_cli.py gpt-6.1-sol medium"
+python validate/id_audit.py --population validate/out/ins_missing_datasets.tsv --sample-from validate/out/YOUR_FIRST_AUDIT.jsonl --tag _second_reviewer --cmd "python validate/adapters/codex_cli.py gpt-6.1-sol medium"
 ```
 
 ## The tasks and their answer formats
@@ -52,7 +53,7 @@ the tool's answer**.
 
 | Task | Script | The model answers with |
 |---|---|---|
-| Label a paper | `ai_judge.py` | `LABEL:` one of the labels in `README.md`; `MIXED: yes/no`; `CODE_SHARED: yes/no`; `CONFIDENCE: high/medium/low`; `REASON:` one sentence |
+| Label a paper | `ai_judge.py` | `LABEL:` one of the labels in `HOW_IT_WORKS.md`; `MIXED: yes/no`; `CODE_SHARED: yes/no`; `CONFIDENCE: high/medium/low`; `REASON:` one sentence |
 | Is this deposit the paper's own? | `id_audit.py` | `ROLE: OWN/REUSED/NOT_A_DEPOSIT/UNCLEAR`; `KIND: DATA/CODE/OTHER`; `CONFIDENCE`; `REASON` |
 
 Answers are parsed line by line, so any model that follows a fixed format works. Low-confidence labels are not
@@ -65,5 +66,4 @@ applied; those papers are reported as ambiguous (`validate/out/ambiguous.csv`).
 | Claude Opus 5.5 (medium effort) | Anthropic | category labels for undecided papers; per-paper audits; deposit audits | see `VALIDATION.md` |
 | GPT-6.1 (Sol, medium effort, via `adapters/codex_cli.py`) | OpenAI | deposit audits, on the same rows as Claude | agrees with Claude on 121 of 130 rows of the tier audit (Cohen's kappa 0.65); see `VALIDATION.md` |
 
-A model of similar capability should be expected to perform similarly; re-run the audit scripts to measure any model
-before relying on it.
+Only these two models were tested; re-run the audit scripts to measure any other model before relying on it.

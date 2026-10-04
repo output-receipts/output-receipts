@@ -201,34 +201,49 @@ def report(papers, resolution, by_pmid, everywhere, args):
            if i["role"] == "generated" and i["cls"] != "url" and not i["is_code"]]
     code = [(pm, i) for pm, p in chk.items() for i in p["extraction"]["identifiers"]
             if i["role"] == "generated" and i["cls"] != "url" and i["is_code"]]
+    def ins_says(pm, acc):
+        where = everywhere.get(acc)
+        if where is None:
+            return "not in INS at all"
+        if pm in where:
+            return "INS attributes it to this paper (confirmed own)"
+        if where:
+            return "INS attributes it to OTHER papers only (likely reused)"
+        return "INS lists it without naming any paper (no signal)"
+
     sig = defaultdict(Counter)
     added = []
     for pm, i in own:
         acc = i["id"].lower()
         st = resolution.get(f"{i['repo']}|{i['id']}", {}).get("status", "")
         if i["repo"] in NCBI:
-            where = everywhere.get(acc)
-            if where is None:
-                k = "not in INS at all"
-            elif pm in where:
-                k = "INS attributes it to this paper (confirmed own)"
-            else:
-                k = "INS attributes it to OTHER papers only (likely reused)"
+            k = ins_says(pm, acc)
             sig[i["repo"]][k] += 1
             sig[i["repo"]]["total"] += 1
-            if where is None:
+            if k == "not in INS at all":
                 added.append((pm, i, st))
         else:
             added.append((pm, i, st))
-    L += ["", "WHAT THE TOOL CALLS OWN, checked against INS (own data deposits in GEO/SRA/dbGaP)"]
-    for repo in NCBI:
-        c = sig[repo]
-        if c["total"]:
-            L.append(f"  {repo}: {c['total']}")
-            for k, v in c.most_common():
-                if k != "total":
-                    L.append(f"    {k:55} {v:>5}  {100 * v / c['total']:.1f}%")
+    # the same table from the sentence rules alone: the record check reads the GEO-to-PubMed link that INS also
+    # harvests, so only this version is independent of INS's source
+    sig_text = defaultdict(Counter)
+    for pm, p in chk.items():
+        for i in p["extraction"]["identifiers"]:
+            if i.get("role_text") == "generated" and i["cls"] != "url" and not i["is_code"] and i["repo"] in NCBI:
+                sig_text[i["repo"]][ins_says(pm, i["id"].lower())] += 1
+                sig_text[i["repo"]]["total"] += 1
+    for title, table in (("WHAT THE TOOL CALLS OWN, checked against INS (own data deposits in GEO/SRA/dbGaP)", sig),
+                         ("THE SAME, FROM THE SENTENCE RULES ALONE (before any repository record is read)", sig_text)):
+        L += ["", title]
+        for repo in NCBI:
+            c = table[repo]
+            if c["total"]:
+                L.append(f"  {repo}: {c['total']}")
+                for k, v in c.most_common():
+                    if k != "total":
+                        L.append(f"    {k:55} {v:>5}  {100 * v / c['total']:.1f}%")
     js["own_vs_ins"] = {k: dict(v) for k, v in sig.items()}
+    js["own_vs_ins_sentence_rules_alone"] = {k: dict(v) for k, v in sig_text.items()}
 
     other = [(pm, i, st) for pm, i, st in added if i["repo"] not in NCBI]
     ncbi_new = [(pm, i, st) for pm, i, st in added if i["repo"] in NCBI]
@@ -252,6 +267,8 @@ def report(papers, resolution, by_pmid, everywhere, args):
         w = csv.writer(f, delimiter="\t")
         w.writerow(["pmid", "repository", "accession", "url", "link_status", "evidence", "sentence"])
         for pm, i, st in sorted(added, key=lambda t: (t[1]["repo"], t[1]["id"], t[0])):
+            if st != "RESOLVES":
+                continue   # links that do not resolve are counted above, not listed
             w.writerow([pm, i["repo"], i["id"], resolve.human_url(i["repo"], i["id"]), st, i["evidence"],
                         extract.redact_access(i["context"])])
     (OUT / "ins_benchmark_report.txt").write_text("\n".join(L) + "\n", encoding="utf-8")

@@ -7,7 +7,7 @@ Plain-language details are in `HOW_IT_WORKS.md`; code-level details in `MAINTAIN
 
 ```mermaid
 flowchart TD
-    A["NIH RePORTER<br/>awards for a cohort<br/>(e.g. NCI FY2024 new R01s: 589)"] --> B["Award to paper links<br/>(investigator-reported, as INS uses)"]
+    A["NIH RePORTER<br/>awards for a cohort<br/>(e.g. NCI FY2024 new R01s: 589)"] --> B["Award to paper links<br/>(investigator-reported)"]
     B --> C{"Paper published more than<br/>1 year before the award started?"}
     C -- yes --> X1["Excluded<br/>(INS's own rule)"]
     C -- no --> D["Papers in scope<br/>(2,086)"]
@@ -18,17 +18,17 @@ flowchart TD
     F --> H["Find identifiers by shape<br/>GSE..., PRJNA..., phs..., EGA..., PXD...,<br/>DOIs, github.com/...  (25+ repositories)"]
     G --> I
     H --> I["Judge each identifier from the paper's wording:<br/>OWN output or REUSED data?<br/>(diagram 2, parts A and B)"]
-    I --> J["Ask each repository:<br/>'does this record exist and is it public?'<br/>and 'which paper, award and people does it name?'<br/>(diagram 2, part C)"]
+    I --> J["Ask each repository:<br/>'does this record exist and is it public?'<br/>and, where the record can be read,<br/>'which paper, award and people does it name?'<br/>(diagram 2, part C)"]
     J --> K["Label each paper<br/>(public repository, controlled access, on request,<br/>in article, reused only, no data, no statement)"]
     K --> L{"Rules undecided?<br/>(about 8%)"}
     L -- yes --> M["NEEDS REVIEW<br/>(a person, or optionally an AI model)"]
     L -- no --> N
     M --> N["Outputs"]
-    N --> O1["INS candidate rows<br/>(INS dataset-table columns)"]
-    N --> O2["Receipt per award"]
+    N --> O1["INS candidate rows<br/>(INS column names for the identifying fields)"]
+    N --> O2["Receipt for each award<br/>with a deposit"]
     N --> O3["Per-paper table"]
     N --> O4["Summary + dashboard"]
-    O1 --> P["Compare with INS's public tables<br/>(validate/ins_compare.py)"]
+    O1 --> P["Compare with INS's public tables<br/>(a separate step: validate/ins_compare.py)"]
     P --> Q["Rows INS does not list yet<br/>= candidates for curation"]
 
     classDef ext fill:#eef4fb,stroke:#0b5cad;
@@ -85,9 +85,9 @@ flowchart TD
     UNK --> C0
     REU --> C4{"REUSED only by the body-text default,<br/>and the record cites this paper<br/>or names its award?"}
     C0 -- "points to other work:<br/>public more than a year before the paper and cites other papers,<br/>or by other people and old or tied to another paper" --> FREU["REUSED<br/>(not counted)"]
-    C0 -- "confirms: cites this paper,<br/>names this award, or a submitter<br/>is an author of the paper" --> FOWN["OWN: counted as the paper's output,<br/>link-checked, written as a candidate row<br/>with its confirmation tier"]
+    C0 -- "confirms: cites this paper,<br/>names this award, or a submitter's name<br/>matches an author and the record is not<br/>more than a year older than the paper" --> FOWN["OWN: counted as the paper's output,<br/>link-checked, written as a candidate row<br/>with its confirmation tier"]
     C0 -- "says nothing either way,<br/>or the repository has no readable record" --> C2{"Was it OWN from the wording?"}
-    C2 -- yes --> FOWN2["OWN, tier 'paper only':<br/>rests on the paper's wording alone"]
+    C2 -- yes --> FOWN2["OWN, record check 'paper only':<br/>rests on the paper's wording alone"]
     C2 -- "no (UNCLEAR)" --> FUNK["UNCLEAR: the paper goes to<br/>NEEDS REVIEW unless it has another own deposit"]
     C4 -- yes --> FOWN
     C4 -- no --> FREU
@@ -102,5 +102,6 @@ flowchart TD
 
 "Nearest cue" has two refinements: an own cue beats vague reuse wording such as "from the Sequence Read Archive" at
 any distance, and inside the statement a cue in the sentence just before the identifier's sentence is used when its
-own sentence has none. The code is `mention_role` and `analyze` in `receipts/extract.py` (parts A and B), and
+own sentence has none. The diagram simplifies the order of some tests (for example, a reference-list entry that the
+statement itself cites is judged from the statement); the code is the reference. The code is `mention_role` and `analyze` in `receipts/extract.py` (parts A and B), and
 `receipts/records.py` with `receipts/crosscheck.py` (part C).

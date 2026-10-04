@@ -5,8 +5,8 @@
 Reads the full local outputs of a run (data/output, data/work, validate/out) and writes what is published:
 
   index.html                          landing page (served by GitHub Pages)
-  receipts.html                       browse every award's receipt: what its papers shared, with links
-  public/candidates_not_in_ins.tsv    dataset rows INS does not list yet: INS's dataset-table columns, plus the
+  receipts.html                       browse the receipts (awards with a deposit): what their papers shared, with links
+  public/candidates_not_in_ins.tsv    dataset rows INS does not list yet: INS's column names for the identifying fields, plus the
                                       evidence sentence, the record check and the triage tier
   public/candidates_all.tsv           every own deposit found (datasets and code), same columns, with in_ins
   public/receipts.json                the receipts as data
@@ -36,10 +36,10 @@ PUB = ROOT / "public"
 NCBI = ("GEO", "SRA/BioProject", "dbGaP")
 TIER_TEXT = {
     "1": ("The link works and the repository's own record confirms the deposit: it cites the paper, names the award, "
-          "or lists a submitter whose name matches an author", "Quick check: open the record"),
+          "or lists a submitter whose surname and initial match an author", "Quick check: open the record"),
     "2": ("The link works and the paper states the deposit explicitly; the record is silent or cannot be read",
           "Read the quoted sentence"),
-    "3": ("The wording is weaker, or the link is dead, private or unverified",
+    "3": ("The wording is weaker, or the link does not resolve (dead, private, restricted or unverified)",
           "Open the paper; route link problems to the investigator"),
 }
 e = html.escape
@@ -159,6 +159,7 @@ def main():
         "own_datasets_confirmed_by_repository_record": rec_ok, "own_datasets_already_in_ins": ins["own_datasets_in_ins"],
         "already_in_ins_under_the_same_paper": ins["own_datasets_in_ins_same_paper"],
         "already_in_ins_under_other_papers_only": ins["own_datasets_in_ins_other_papers_only"],
+        "already_in_ins_with_no_paper_named": ins["own_datasets_in_ins_no_paper_named"],
         "own_datasets_not_in_ins": ins["own_datasets_not_in_ins"], "not_in_ins_link_works": ins["not_in_ins_resolving"],
         "not_in_ins_outside_geo_sra_dbgap": ins["not_in_ins_outside_ncbi"],
         "not_in_ins_by_tier": {t: tiers[t] for t in ("1", "2", "3")}, "code_deposits": ins["code_deposits"],
@@ -212,24 +213,29 @@ def main():
             lines.append(f"<tr><td>Paper {n} ({e(p['year'])})</td><td>{items}</td></tr>")
         ex_html = f"""<h2>What a receipt looks like</h2>
 <p class=muted>One award from this cohort, shown without names. The <a href="receipts.html">receipts page</a> has every
-award, with links to each paper and deposit.</p>
+award with at least one deposit found, with links to each paper and deposit.</p>
 <table><tr><th>Paper</th><th>What it shared &middot; link check &middot; record check</th></tr>{''.join(lines)}</table>"""
 
     bench_html = ""
     if bench and bench.get("recall_by_paper_geo", {}).get("papers"):
         b, g, ad = bench["recall_by_paper_geo"], bench.get("own_vs_ins", {}).get("GEO", {}), bench.get("added", {})
+        gt = bench.get("own_vs_ins_sentence_rules_alone", {}).get("GEO", {})
         same = g.get("INS attributes it to this paper (confirmed own)", 0)
+        same_t = gt.get("INS attributes it to this paper (confirmed own)", 0)
         bench_html = f"""<h2>A second check, against NCI's own records (no AI)</h2>
 <p>The tool was also run on {bench['checkable']:,} papers from programs INS already curates, and compared with the
 datasets INS itself attributes to those papers.</p>
 <table>
 <tr><td>Papers with a GEO series in INS where the tool, reading only the paper, called at least one of them the paper's own</td><td class=n><b>{b['own_text']:,} of {b['papers']:,}</b></td></tr>
 <tr><td>The same, after the record check</td><td class=n><b>{b['own']:,} of {b['papers']:,}</b></td></tr>
-<tr><td>GEO series the tool called a paper's own, where INS names the same paper</td><td class=n><b>{same:,} of {g.get('total', 0):,}</b></td></tr>
-<tr><td>Datasets found for those papers in repositories outside GEO, SRA and dbGaP, which INS does not list</td><td class=n><b>{ad.get('outside_ncbi', 0):,}</b></td></tr>
+<tr><td>GEO series the tool, reading only the paper, called a paper's own, where INS names the same paper</td><td class=n><b>{same_t:,} of {gt.get('total', 0):,}</b></td></tr>
+<tr><td>The same, after the record check</td><td class=n><b>{same:,} of {g.get('total', 0):,}</b></td></tr>
+<tr><td>Datasets found for those papers in repositories outside GEO, SRA and dbGaP</td><td class=n><b>{ad.get('outside_ncbi', 0):,}</b></td></tr>
 </table>
-<p class=muted>The two methods are complementary: INS's link harvesting also finds series that a paper's open text
-never names, and reading the paper finds deposits in repositories that publication links do not cover.</p>"""
+<p class=muted>The record check reads the same GEO-to-PubMed link that INS harvests, so the "reading only the paper"
+figures are the independent ones. The two methods are complementary: INS's link harvesting also finds series that a
+paper's open text never names, and reading the paper finds deposits in repositories that publication links do not
+cover.</p>"""
 
     cats = h["disposition_counts"]
     page = f"""<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">
@@ -238,47 +244,48 @@ never names, and reading the paper finds deposits in repositories that publicati
 <h1>Output Receipts</h1>
 <p class=muted>A discovery aid that connects the data NCI's awards have shared back to NCI's catalog. Public data only;
 runs without AI.</p>
-<p>For a set of NIH awards, Output Receipts follows each award to its papers, reads what each paper says it
-deposited, checks each deposit against the repository's own record, and writes the results as candidate rows for the
-<a href="https://studycatalog.cancer.gov">Index of NCI Studies (INS)</a> and as a receipt for each award. It is a
+<p>For a cohort of NIH awards, Output Receipts follows each award to its papers, reads what each paper says it
+deposited, checks that each deposit exists, compares it with the repository's own record where that record can be
+read, and writes the results as candidate rows for the
+<a href="https://studycatalog.cancer.gov">Index of NCI Studies (INS)</a> and as a receipt for each award with a deposit. It is a
 starting point for curation, not a replacement for it. This run covers the {ins['awards']} new R01 awards NCI made in
 fiscal year 2024.</p>
 
 <h2>What this run found</h2>
 <div class=tiles>{tiles_html}</div>
 <p class=muted>Compared with NCI's public <a href="https://github.com/CBIIT/INS-Data">INS-Data</a> tables (gathered
-{e(ins['ins_snapshot'])}). INS is built around curated programs and NCBI's publication links; it includes
-{ins['awards_in_ins']} of these {ins['awards']} investigator-initiated awards. The candidates here are the part of the
-portfolio it was not built to reach.</p>
+{e(ins['ins_snapshot'])}; its dbGaP table is dated 2026-03-09). INS is built around curated programs, NCBI's links
+from publications to GEO and SRA, and NCI's dbGaP studies; it includes {ins['awards_in_ins']} of these {ins['awards']}
+awards.</p>
 
 <h2>Three tiers: what is known, and what a curator does</h2>
 <div class=tw><table><tr><th>Tier</th><th>What is true of the row</th><th>Rows</th><th>Blind review: both reviewers confirm</th><th>Curator action</th></tr>
 {tier_rows}</table></div>
 <p class=muted>Rows = the {n_miss:,} dataset candidates not in INS. Blind review: two AI models from different developers,
-neither shown the tool's answer, judged the same {len(keys)} rows from the paper's text{f"; weighted to all rows, both confirm about {100 * weighted:.0f}%" if weighted else ""}.
+neither shown the tool's answer, judged the same {len(keys)} rows from passages of the paper's text{f"; weighted to all rows, both confirm about {100 * weighted:.0f}%" if weighted else ""}.
 That is agreement with AI reviewers, not a human gold standard. Details: <a href="{REPO}/blob/main/VALIDATION.md">VALIDATION.md</a>.</p>
 
 <div class=cols><div>
 <h2>What is looked up</h2>
-<ul><li>The record exists and is public: {st.get('RESOLVES', 0):,} of {definitive:,} identifiers checked.
+<ul><li>The link resolves publicly: {st.get('RESOLVES', 0):,} of {definitive:,} identifiers checked.
 {st.get('RESTRICTED', 0)} more exist behind an access request; {dead} do not resolve, {st.get('PRIVATE', 0)} of them still private.</li>
-<li>The repository's record cites the paper, names the award, or lists a submitter whose name matches an author
-({rec_ok:,} of {len(data_rows):,} datasets).</li>
+<li>The repository's record cites the paper, names the award, or lists a submitter whose surname and initial
+match an author ({rec_ok:,} of {len(data_rows):,} datasets).</li>
 <li>NIH RePORTER links the paper to the award.</li>
 <li>INS lists the dataset, or does not.</li></ul>
-<p class=muted>Exact, and anyone can check each one in a click.</p>
+<p class=muted>Anyone can check each one in a click.</p>
 </div><div>
 <h2>What is inferred, and what is not known</h2>
-<ul><li><b>Inferred from wording:</b> whether a deposit is the paper's own or data it reused. The sentence is in every row.</li>
+<ul><li><b>Inferred from wording:</b> whether a deposit is the paper's own or data it reused. Each published candidate row quotes the paper's text.</li>
 <li><b>Not determined:</b> {cats.get('NOT_CHECKABLE', 0)} of {h['papers_in_scope']:,} papers have no open full text, and the
 tool does not guess.</li>
-<li><b>Not claimed:</b> which award paid for a dataset when a paper cites several; rows say "associated with, per
-RePORTER", as INS does for publications.</li></ul>
+<li><b>Not claimed:</b> which award paid for a dataset. The <code>funding_source</code> column lists the awards in
+this cohort that RePORTER links to the paper: an association only.</li></ul>
 </div></div>
 
 <h2>Open these first</h2>
 <div class=start>
-<a href="public/candidates_not_in_ins.tsv"><b>The candidate rows</b><br>datasets INS does not list, in INS's dataset-table columns, each with its paper, evidence sentence, record check and tier (TSV; opens in Excel)</a>
+<a href="public/candidates_not_in_ins.tsv"><b>The candidate rows</b><br>datasets INS does not list, with INS's column names for the identifying fields, each with its paper, evidence sentence, record check and tier (TSV; opens in Excel)</a>
 <a href="receipts.html"><b>Receipts</b><br>what each award's papers shared, with links; searchable</a>
 <a href="{REPO}/blob/main/FLOWCHART.md"><b>The process on one page</b><br>two flowcharts: the pipeline, and how a deposit is judged</a>
 <a href="{REPO}/blob/main/HOW_IT_WORKS.md"><b>How it works</b><br>plain language, with real examples</a>
@@ -310,23 +317,24 @@ RePORTER", as INS does for publications.</li></ul>
 <li><b>Papers to full text.</b> Open-access XML from PubMed Central and Europe PMC.</li>
 <li><b>Statements and identifiers.</b> The data availability statement, and identifiers for more than 25 repositories.</li>
 <li><b>Own or reused?</b> Judged from the sentence: &ldquo;generated in this study&hellip; deposited in&rdquo; versus &ldquo;downloaded from&rdquo;, &ldquo;previously published&rdquo;, TCGA.</li>
-<li><b>Link and record check.</b> Each deposit is looked up in its repository: does it exist, is it public, and which paper, award and people does the record name?</li>
-<li><b>Outputs.</b> Candidate rows in INS's format with a tier, and a receipt per award.</li>
+<li><b>Link and record check.</b> Each deposit is looked up in its repository: does it exist and is it public? Where the record can be read: which paper, award and people does it name?</li>
+<li><b>Outputs.</b> Candidate rows with a tier, and a receipt for each award with a deposit.</li>
 </ol>
 
 <div class=cols><div>
 <h2>What it is good for</h2>
-<ul><li>Finds deposits in any repository, from the authors' own statements.</li>
-<li>Hands curators rows with evidence and a stated confidence, so checking replaces searching.</li>
+<ul><li>Finds deposits in more than 25 repositories, from the authors' own statements.</li>
+<li>Hands curators rows with evidence and a stated confidence.</li>
 <li>Transparent rules and public lookups: free, repeatable, no credentials, no AI needed to run.</li>
-<li>Works for any NIH Institute, activity code or fiscal year.</li></ul>
+<li>Takes an NIH Institute, activity code and fiscal year as input; run so far on this one cohort.</li></ul>
 </div><div>
 <h2>Limits</h2>
 <ul><li>Reads only open full text; not supplementary files.</li>
 <li>Own-versus-reused is a judgment from wording; tier 3 is where it is weakest.</li>
-<li>Some repositories (dbGaP, EGA, MassIVE, GitHub) have no record the tool can compare yet. dbGaP is the weakest:
-INS attributes {ins['in_ins_other_papers_only_by_repository'].get('dbGaP', 0)} of the {ins['datasets_by_repository'].get('dbGaP', {}).get('detected', 0)} dbGaP studies found here to earlier papers, so they are
-probably reused consortium data.</li>
+<li>For some repositories (dbGaP, EGA, MassIVE, GitHub and others) the tool does not yet read a record it can
+compare. dbGaP is the weakest: of the {ins['datasets_by_repository'].get('dbGaP', {}).get('detected', 0)} dbGaP studies found here, INS attributes
+{ins['in_ins_other_papers_only_by_repository'].get('dbGaP', 0)} only to other papers (probably reused consortium data) and names no paper for
+{ins['in_ins_no_paper_named_by_repository'].get('dbGaP', 0)}.</li>
 <li>Reports what is findable, never compliance with a data sharing plan.</li>
 <li>Dead and private links are counted here but listed only in the local outputs, for the investigator to fix.</li></ul>
 </div></div>
@@ -354,7 +362,8 @@ input{{width:100%;padding:10px;font:inherit;border:1px solid var(--line);border-
 <p><a href="index.html">&larr; Output Receipts</a></p>
 <h1>Receipts</h1>
 <p>What each award's papers shared, as found in their open full text: {len(receipts)} awards, {n_dep:,} deposits whose
-link works. Papers are tied to awards by NIH RePORTER; a deposit is listed under every award its paper cites.</p>
+link works. Papers are tied to awards by NIH RePORTER; a deposit is listed under every award in this cohort that
+RePORTER links to its paper.</p>
 <p class=muted>An award appears here only when at least one deposit was found. Absence means nothing was found in
 open full text; it does not mean nothing was shared. "Record check" says whether the repository's own record
 confirms the deposit or the row rests on the paper's wording.</p>

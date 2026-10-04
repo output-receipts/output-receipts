@@ -40,7 +40,8 @@ http = fetch.Http(str(ROOT / "data/cache"), interval=1.0)
 vol = {}
 for fy in (2023, 2024, 2025):
     r = http.request("https://api.reporter.nih.gov/v2/projects/search", method="POST", json_body={
-        "criteria": {"fiscal_years": [fy], "agencies": ["NCI"], "award_types": ["1"]}, "limit": 1})
+        "criteria": {"fiscal_years": [fy], "agencies": ["NCI"], "award_types": ["1"], "exclude_subprojects": True},
+        "limit": 1})
     vol[fy] = r.json().get("meta", {}).get("total") if r.ok else f"error {r.status}"
 
 per_award = len(miss_data) / len(grants)
@@ -54,7 +55,7 @@ L = ["Scale and curation numbers",
      f"{len(tier2)} ({100 * len(tier2) / len(miss_data):.0f}%)",
      f"  tier 3, everything else (curator looks first): {len(miss_data) - len(bulk)} "
      f"({100 * (len(miss_data) - len(bulk)) / len(miss_data):.0f}%)",
-     f"NCI new (type 1) awards, all activity codes, per fiscal year (RePORTER): {vol}",
+     f"NCI new (type 1) awards, all activity codes, subprojects excluded, per fiscal year (RePORTER): {vol}",
      f"not-in-INS datasets per FY2024 R01 award: {per_award:.2f}",
      "(portfolio extrapolation is rough: other activity codes publish at different rates)"]
 (ROOT / "validate/out/scale_report.txt").write_text("\n".join(L) + "\n", encoding="utf-8")

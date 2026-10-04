@@ -5,7 +5,7 @@ fix, extend and re-validate the tool is here or in the files it points to. Start
 then this file (how it works and how to change it), then `VALIDATION.md` (how accurate it is).
 
 **Requirements:** Python 3.10 or newer, standard library only. No packages, no credentials, no database.
-**Tests:** `python -m unittest discover tests` (48 tests, under a second). Run them after any rule change.
+**Tests:** `python -m unittest discover tests` (69 tests, under a second). Run them after any rule change.
 
 ## 1. Repository layout
 
@@ -23,7 +23,7 @@ then this file (how it works and how to change it), then `VALIDATION.md` (how ac
 | `site/build.py` | Builds what is published from a run's full local outputs: `index.html` (project page), `receipts.html` (receipts browser) and `public/` (candidate rows, receipts, summary). Re-run it after any new run. |
 | `FLOWCHART.md` | The process as two diagrams. Update diagram 2 if the decision order in section 3 changes. |
 | `HOW_IT_WORKS.md` | Plain-language explanation for non-developers. Update it if a rule changes what a label means. |
-| `tests/` | Rule tests, including one regression test per misfire found by the audits. |
+| `tests/` | Rule tests, including a regression test for each misfire that was fixed. |
 | `data/cache/` | Every HTTP response, gzip-JSON, keyed by URL (about 64 MB for one cohort). Not committed; rebuilt on demand. |
 | `data/work/` | Intermediate JSON: `grants.json`, `papers.json` (includes each paper's extraction), `resolution.json`, `geo_pubmed_links.json`, `run_info.json`. Not committed. |
 | `data/review/` | `needs_review.jsonl` (papers the rules could not decide) and `llm_review_labels.csv` (labels for them, if a reviewer supplies any). Local; not published. |
@@ -52,7 +52,7 @@ then this file (how it works and how to change it), then `VALIDATION.md` (how ac
 7. **Classification and reports.** `classify.classify` labels each paper (rules first, then any review label from
    `data/review/llm_review_labels.csv`); `report.write_all` writes the outputs.
 
-A cold run of one fiscal-year R01 cohort takes one to two hours (polite rate limits); a re-run from cache takes about
+A cold run of one fiscal-year R01 cohort takes about an hour (64 minutes for FY2024; polite rate limits); a re-run from cache takes about
 five minutes. `python -m receipts reclassify` re-applies rules and review labels to `data/work/` with no network.
 `--offline` runs from the cache only (lookups that were never cached are skipped, so prefer a normal run).
 
@@ -117,12 +117,13 @@ the statement excerpt, and each identifier with its role and link status. The fu
 3. Add a regression test that reproduces the case.
 4. Run the tests, then `python -m receipts reclassify` (for classification-only changes) or a normal `run`
    (for extraction changes, which need re-parsing; it uses the cache).
-5. Run `python validate/rescore.py validate/out/answers.jsonl validate/out/answers_fresh.jsonl` to see which audited
-   papers your change fixed or broke, at no cost.
+5. Run `python validate/rescore.py validate/out/answers.jsonl validate/out/answers_fresh.jsonl` (your own saved
+   answer files from earlier `ai_judge.py` audits; this prototype's are not published) to see which audited papers
+   your change fixed or broke, at no cost.
 
 **Label the papers the rules cannot decide.** Each line of `data/review/needs_review.jsonl` has the statement and the
 reason. Put one row per paper in `data/review/llm_review_labels.csv` (`pmid,label,mixed,code_shared,note`; labels as
-in `README.md`), by any reviewer, human or model, then run `reclassify`. Those papers are reported with
+in `HOW_IT_WORKS.md`), by any reviewer, human or model, then run `reclassify`. Those papers are reported with
 `label_source = llm-review`. `validate/ai_judge.py` does this with a model (see section 6).
 
 **Publish a new run.** After `run`, run `validate/ins_compare.py` (needs the INS tables) and then
@@ -170,7 +171,7 @@ INS; `PRIDE/ProteomeXchange` here). Map them at ingestion.
 | `validate/compare_reviewers.py` | Two reviewers on the same rows: agreement, and the share both confirm, overall and per tier. |
 | `validate/ins_benchmark.py` | Runs the rules on papers INS already lists and compares with the datasets INS attributes to them (no model). |
 | `validate/rescore.py` | Re-scores saved audit answers against the current rules (no model calls). |
-| `validate/human_check.py` | Builds a review page: each item shows the sentence containing the identifier, with one-click answers and time per decision. `--rows FILE --n 200` builds a curator sample from any candidate file; `--score FILE` scores pasted answers. |
+| `validate/human_check.py` | Builds a review page from a local run: each item shows the sentence containing the identifier, with one-click answers and a timestamp per decision. `--rows FILE --n 200` builds a simple random curator sample from any candidate file; `--score FILE` compares pasted answers with a saved audit file. |
 | `validate/attribution.py`, `validate/scale.py` | Award attribution and portfolio-scale figures. |
 
 Every model call goes through `ask_model` in `validate/ai_judge.py`. Pass `--cmd` to use any model: a command
@@ -196,18 +197,19 @@ documented in `AI_REVIEW.md`.
 ## 8. Questions an adopting team is likely to ask
 
 **How is a dataset attributed to an award?** Through NIH RePORTER's publication links (the investigator-reported
-award-paper links that INS also uses), with INS's 365-day rule. A paper citing several awards associates its datasets
+award-paper links), with INS's 365-day rule. A paper linked to several awards in the cohort associates its datasets
 with each of them. `validate/attribution.py` reports how common that is (88% of papers in the FY2024 R01 cohort).
 
-**Is AI required?** No. The labels come from the deterministic rules in `classify.py`. A model is used only for the
-roughly 8% of papers the rules cannot decide (a human can label those instead) and for audits.
+**Is AI required?** No. The labels come from the deterministic rules in `classify.py`. In this prototype a model
+labelled the papers the rules could not decide at the time (a human can label those instead; any label in the
+review file overrides the rules) and served as the audit reviewer.
 
-**What does it miss?** Papers without open full text (12% of the FY2024 R01 cohort, falling under NIH's 2024 Public
-Access Policy), deposits listed only in supplementary files, and links on lab websites. See `README.md`, Limitations.
+**What does it miss?** Papers without open full text (12% of the FY2024 R01 cohort), deposits listed only in
+supplementary files, links on lab websites, and identifiers beyond the first 25 per repository in one paper. See `README.md`, Limitations.
 
-**How accurate is it?** See `VALIDATION.md`: per label, on a held-out sample, and for the out-of-NCBI deposits.
+**How accurate is it?** See `VALIDATION.md`: per tier, against INS's own records, and per paper category.
 
-**Can it run inside NCI?** Yes: standard-library Python, outbound HTTPS to public APIs only, about 70 MB of disk per
+**Can it run inside NCI?** Yes: standard-library Python, outbound HTTPS to public APIs and to the links named in the papers, about 70 MB of disk per
 cohort including the cache.
 
 **How do I add a data type or repository?** Section 4. Most additions are one regex, one resolver line and one test.

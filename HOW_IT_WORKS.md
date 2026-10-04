@@ -8,12 +8,11 @@ accuracy see `VALIDATION.md`.
 
 NIH asks funded researchers to share their data, and NCI's Index of NCI Studies (INS) aims to show, in one place,
 what NCI's investment produced. But there is no central list of which datasets each grant created. Repository
-records rarely say which grant paid for them (about 1% of datasets deposited since 2015 record a funder and grant
-number, per OpenAlex and DataCite). The connection is written down reliably in one place: the paper. Most journals
-now require a short **data availability statement**, for example:
+records rarely say which grant paid for them (just 1% of datasets published since 2015 carry both a funder and a
+grant number, per an OpenAlex analysis of DataCite's metadata, July 2026). The connection is often written down in
+the paper. Many journals now require a short **data availability statement**, for example, from this cohort:
 
-> "The RNA-seq data generated in this study have been deposited in GEO under accession GSE221112. Other data are
-> available from the corresponding author upon reasonable request."
+> "The RNA-sequencing data used in this study has been deposited (GEO: GSE221112)."
 
 Reading thousands of these by hand is slow, but they are formulaic: authors reuse standard phrases, and dataset
 identifiers have fixed formats. Output Receipts reads them automatically.
@@ -32,8 +31,9 @@ identifiers have fixed formats. Output Receipts reads them automatically.
 4. **Own or reused?** The same kind of identifier can be the paper's own deposit or someone else's data it
    analysed, so each mention is judged from its sentence (step-by-step examples below).
 5. **Link and record check.** Every identifier a paper presents as its own is looked up in the repository's public
-   interface: does it exist, is it public, and which paper, award and people does the record itself name?
-6. **Outputs.** Candidate rows for INS, a receipt per award, a table per paper, and a dashboard.
+   interface: does it exist and is it public? For the repositories whose records the tool reads: which paper, award
+   and people does the record itself name?
+6. **Outputs.** Candidate rows for INS, a receipt for each award with a deposit, a table per paper, and a dashboard.
 
 ## How "own or reused" is decided: real examples from this cohort
 
@@ -70,8 +70,8 @@ The decision, in order:
    - the record says nothing either way: the call rests on the paper's wording, and the row is marked
      "paper only".
 
-   Each candidate row carries this as its `record_check`, so a curator can see at a glance which rows two
-   independent sources agree on.
+   Each candidate row carries this as its `record_check`, so a curator can see at a glance which rows the
+   repository's record supports.
 
 | The paper says | Decision |
 |---|---|
@@ -110,10 +110,10 @@ describe the paper; they do not change which deposits are found or how they are 
 
 | Status | Meaning |
 |---|---|
-| Resolves | The record exists and is public |
+| Resolves | The link resolves: the record, or for DOI-based repositories its registered DOI, exists and is public. Controlled-access studies in dbGaP and EGA with a public study page count as resolving |
 | Not found | The repository says there is no such record (often a typo or a withdrawn record) |
 | Private | The record exists but is not yet public (for GEO, a release usually still pending after publication) |
-| Restricted | Exists behind controlled access (expected for dbGaP or EGA) |
+| Restricted | Exists, but the page itself is behind an access request |
 | Unverified | The site did not give a definitive answer; never counted as dead |
 
 The dead-link rate counts only repository identifiers a paper presents as its own (accessions, DOIs, code
@@ -123,11 +123,11 @@ repositories). Other web links in statements (lab pages, portals) are listed and
 
 Every statement the tool makes is one of three kinds, and it says which:
 
-- **Looked up.** The record exists and is public; the repository's record cites the paper, names the award, or
-  lists a submitter whose name matches an author; NIH RePORTER links the paper to the award; INS lists the dataset
-  or does not. These are exact, and anyone can check each one in a click.
+- **Looked up.** The link resolves; the repository's record cites the paper, names the award, or lists a submitter
+  whose surname and initial match an author; NIH RePORTER links the paper to the award; INS lists the dataset or
+  does not. Anyone can check each one in a click.
 - **Inferred from wording.** Whether a deposit is the paper's own or data it reused. This is a judgment from the
-  sentence, which is why the sentence is shown in every row.
+  sentence, which is why each published candidate row quotes the paper's text.
 - **Not determined.** A paper without open full text is "not checkable"; a paper the rules cannot categorize is
   "needs review". The tool does not guess.
 
@@ -137,7 +137,7 @@ Each candidate row then gets a **tier**, which tells a curator how much checking
 |---|---|---|
 | 1 | The link works and the repository's own record confirms the deposit | Quick check: open the record |
 | 2 | The link works and the paper states the deposit explicitly; the record is silent or cannot be read | Read the quoted sentence |
-| 3 | The wording is weaker, or the link is dead, private or unverified | Open the paper; route link problems to the investigator |
+| 3 | The wording is weaker, or the link does not resolve (dead, private, restricted or unverified) | Open the paper; route link problems to the investigator |
 
 How often each tier is right, as measured, is in `VALIDATION.md`.
 
@@ -145,21 +145,23 @@ How often each tier is right, as measured, is in `VALIDATION.md`.
 
 - **Candidate rows** (published: `public/candidates_not_in_ins.tsv` for datasets INS does not list yet, and
   `public/candidates_all.tsv`): one row per distinct deposit, with its repository, accession, landing page, the
-  papers that report it, the awards those papers cite, the sentence from the paper, the record check and the tier,
-  in INS's own column names. INS curators would add descriptive fields (title, assay, disease) as they do today.
+  papers that report it, and the cohort awards RePORTER links to those papers, under INS's own column names; plus a
+  quote from the paper (up to 300 characters), the record check and the tier. Descriptive fields (title, assay,
+  disease) are not filled in.
   The published files list deposits whose link works; the full table, including links that do not resolve, is a
   local output (`data/output/ins_candidate_datasets.tsv`).
-- **Receipt** (one per award; published in `receipts.html` and `public/receipts.json`): what the award's papers
-  shared and where. The local version (`data/output/receipts.json`) also lists links that do not work; it is meant
-  to be seen by the investigator first, who can fix a dead link or release a private record.
+- **Receipt** (one for each award with at least one deposit found; published in `receipts.html` and
+  `public/receipts.json`): what the award's papers shared and where. The local version (`data/output/receipts.json`)
+  also lists links that do not work; it is meant to be seen by the investigator first, who can fix a dead link or
+  release a private record.
 - **Per-paper table** (local: `data/output/papers.csv`): every paper's category, the reason, the identifiers found
   and a short excerpt of its statement, so any category can be checked against the paper.
 
 ## How a dataset is tied to an award
 
-Through NIH RePORTER's award-paper links, which investigators report, exactly as INS associates papers with grants.
-Most papers acknowledge several awards (88% in this cohort), so a dataset is associated with every award its paper
-cites. That means "associated with", not proof of which award paid for it; INS makes the same association.
+Through NIH RePORTER's award-paper links, which investigators report. Most papers are linked to several awards
+(88% in this cohort), so a dataset is associated with every award in the cohort that RePORTER links to its paper.
+That means "associated with", not proof of which award paid for it.
 
 ## What it does not do
 

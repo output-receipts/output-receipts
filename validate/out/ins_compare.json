@@ -1,17 +1,21 @@
 {
- "ins_snapshot": "2026-01-30",
+ "ins_snapshot": "2026-02-17",
  "awards": 589,
  "awards_in_ins": 8,
- "pairs_pre_snapshot": 1639,
+ "pairs_pre_snapshot": 1689,
  "pairs_pre_snapshot_in_ins": 16,
  "own_datasets": 1012,
  "own_datasets_in_ins": 135,
  "own_datasets_not_in_ins": 877,
  "own_datasets_in_ins_same_paper": 102,
- "own_datasets_in_ins_other_papers_only": 33,
+ "own_datasets_in_ins_other_papers_only": 17,
  "in_ins_other_papers_only_by_repository": {
   "GEO": 5,
-  "dbGaP": 28
+  "dbGaP": 12
+ },
+ "own_datasets_in_ins_no_paper_named": 16,
+ "in_ins_no_paper_named_by_repository": {
+  "dbGaP": 16
  },
  "not_in_ins_resolving": 840,
  "not_in_ins_outside_ncbi": 365,

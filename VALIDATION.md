@@ -8,9 +8,10 @@ the run's local outputs and are not published; the aggregate results are on this
 
 Two things to keep in mind throughout:
 
-- **Looked-up facts are exact.** That a record exists and is public, that it cites a paper or names an award, that
-  RePORTER links a paper to an award, that INS lists an accession: each can be checked in a click, and none of the
-  measurements below is about them.
+- **Looked-up facts can be checked in a click.** That a link resolves, that a record cites a paper or names an
+  award, that RePORTER links a paper to an award, that INS lists an accession: none of the measurements below is
+  about them. One looked-up fact is a match and not an identity: a submitter's surname and first initial matching an
+  author. Section 2 measures how reliable that is.
 - **What is measured is the judgment** that a deposit is the paper's *own* rather than reused. The reference for it
   is either AI reviewers (fallible, and not a human gold standard) or NCI's own INS records.
 
@@ -21,7 +22,7 @@ Two things to keep in mind throughout:
 different developers (Anthropic Claude Opus 5.5 and OpenAI GPT-6.1) each read the paper's availability-related
 passages, including every passage that mentions the identifier, and judged one identifier at a time: is it this
 paper's own deposit, reused, not a deposit, or unclear? Neither was told what the tool concluded. The second
-reviewer ran in an empty folder with no access to this repository.
+reviewer ran in an empty working folder and was not given this repository's location.
 
 | Tier | Rows in the tier | Both reviewers say own | At least one says own | Reviewer 1 / Reviewer 2 |
 |---|---|---|---|---|
@@ -61,7 +62,7 @@ Of the 1,012 datasets the tool identified as papers' own:
 | The record cites the paper | 532 |
 | The record names the award | 7 |
 | A submitter's name matches an author, and the record is not more than a year older than the paper | 205 |
-| Record read, no verdict either way | 143 |
+| Repository the tool reads, but no verdict: the record is silent, or no record could be read | 143 |
 | Repository without a readable record (dbGaP, EGA, MassIVE and others) | 125 |
 
 So 744 of 1,012 (74%) are confirmed by the repository's own record: 81% in GEO, SRA and dbGaP together, 61% in other
@@ -69,9 +70,12 @@ repositories. The check also changed the sentence rules' answer for 149 (paper, 
 to reused because the record points to other work, and 46 unclear or default-reused ones were promoted to own
 because the record points to the paper.
 
-**Is name matching reliable?** Where GEO itself cites the paper (an independent confirmation), a submitter's name
-matched an author in 438 of 443 cases (98.9%). Where GEO cites only other papers, names matched in 73 of 229: the
-same laboratory's earlier data, which the release-date rule keeps from counting as a new deposit.
+**Is name matching reliable?** A match means the same surname and first initial (surname alone when an initial is
+missing). Where GEO itself cites the paper (an independent confirmation), a submitter's name matched an author in
+438 of 443 cases (98.9%). Where GEO cites only other papers, names matched in 73 of 229: the
+same laboratory's earlier data, which the release-date rule keeps from counting as a new deposit. (These counts and
+the ones in the next paragraph were computed once from this run's cached records; no script in this repository
+reproduces them.)
 
 **Against the earlier AI audit.** Of 37 rows from an earlier 60-row audit that the record check now confirms, both
 AI reviewers had called 36 own. The record check independently demoted one of the tool errors those reviewers had
@@ -100,25 +104,31 @@ check reads the same NCBI link INS harvests, so only the "sentence rules alone" 
 
 **Is what the tool calls own really own?**
 
-| Repository | Called own by the tool | INS names the same paper | INS names other papers only | Not in INS |
-|---|---|---|---|---|
-| GEO | 1,734 | 1,628 (93.9%) | 22 (1.3%) | 84 (4.8%) |
-| dbGaP | 96 | 27 (28%) | 57 (59%) | 12 (13%) |
+| Repository | Called own by the tool | INS names the same paper | INS names other papers only | INS names no paper | Not in INS |
+|---|---|---|---|---|---|
+| GEO, from the sentence rules alone | 1,753 | 1,536 (87.6%) | 61 (3.5%) | 0 | 156 (8.9%) |
+| GEO, after the record check | 1,734 | 1,628 (93.9%) | 22 (1.3%) | 0 | 84 (4.8%) |
+| dbGaP | 96 | 27 (28%) | 31 (32%) | 26 (27%) | 12 (13%) |
+
+The GEO record check reads the same GEO-to-PubMed link that INS harvests, so the "sentence rules alone" row is the
+one that is independent of INS.
 
 **dbGaP is the tool's weak spot.** Large consortium studies that a paper reused are often described with the same
-wording as a deposit ("data are available in dbGaP under accession ..."), and dbGaP exposes no record the tool can
-compare. In the main run, INS lists 135 of the 1,012 datasets: for 102 it names the same paper (INS and the tool
-agree), and for 33 (28 of them dbGaP) it names only earlier papers, which marks them as reused data the tool
-misjudged. Among the 877 candidates, all ten dbGaP rows are already in tier 3.
+wording as a deposit ("data are available in dbGaP under accession ..."), and the tool reads no dbGaP record it
+could compare. In the main run, INS lists 135 of the 1,012 datasets: for 102 it names the same paper (INS and the
+tool agree); for 17 (12 dbGaP, 5 GEO) it names only other papers, which suggests reused data the tool misjudged; and
+for 16, all dbGaP, it names no paper, which neither confirms nor contradicts the tool. Among the 877 candidates, all
+ten dbGaP rows are already in tier 3.
 
 **What does the tool add for papers INS already covers?** 479 datasets in repositories outside GEO, SRA and dbGaP,
 from 316 papers (at least 445 resolve); 235 GEO, SRA or dbGaP accessions absent from INS; and 665 code deposits.
-Listed in `validate/out/ins_benchmark_added.tsv`.
+The dataset rows whose link resolves are listed in `validate/out/ins_benchmark_added.tsv`.
 
 ## 4. Comparison of the main run with INS
 
-`validate/ins_compare.py`, against INS-Data tables gathered 2026-01-30. INS includes 8 of the 589 awards (it is built
-around ODS-curated programs) and 16 of the 1,639 award-paper links for papers published before that date. Of 1,012
+`validate/ins_compare.py`, against the INS-Data release gathered 2026-02-17 (its dbGaP table is dated 2026-03-09).
+INS includes 8 of the 589 awards (it is built around ODS-curated programs) and 16 of the 1,689 award-paper links for
+papers published before that date. Of 1,012
 own datasets, 135 are in INS and 877 are not (512 in GEO, SRA or dbGaP; 365 elsewhere); 840 of the 877 resolve.
 "Not in INS" mostly reflects scope, not error: these awards are outside the programs INS curates.
 
@@ -153,7 +163,8 @@ repository alone reports all 159 as "needs review", with the same dataset rows, 
 ## 7. Reproducibility
 
 The whole pipeline was run again from a clean copy of the code with an empty cache, downloading everything afresh
-from the public sources. It took 64 minutes. Compared with the run reported here:
+from the public sources. It took 64 minutes. Compared with the run reported here (the two runs' outputs were
+compared with a one-off script that is not in this repository):
 
 - Every one of the 1,334 own-deposit rows was reproduced, with the same own-versus-reused decision and the same
   record check.

@@ -38,12 +38,28 @@ WHAT THE TOOL CALLS OWN, checked against INS (own data deposits in GEO/SRA/dbGaP
     not in INS at all                                         142  79.3%
     INS attributes it to this paper (confirmed own)            37  20.7%
   dbGaP: 96
-    INS attributes it to OTHER papers only (likely reused)     57  59.4%
+    INS attributes it to OTHER papers only (likely reused)     31  32.3%
     INS attributes it to this paper (confirmed own)            27  28.1%
+    INS lists it without naming any paper (no signal)          26  27.1%
+    not in INS at all                                          12  12.5%
+
+THE SAME, FROM THE SENTENCE RULES ALONE (before any repository record is read)
+  GEO: 1753
+    INS attributes it to this paper (confirmed own)          1536  87.6%
+    not in INS at all                                         156  8.9%
+    INS attributes it to OTHER papers only (likely reused)     61  3.5%
+  SRA/BioProject: 180
+    not in INS at all                                         144  80.0%
+    INS attributes it to this paper (confirmed own)            35  19.4%
+    INS attributes it to OTHER papers only (likely reused)      1  0.6%
+  dbGaP: 96
+    INS attributes it to OTHER papers only (likely reused)     31  32.3%
+    INS attributes it to this paper (confirmed own)            27  28.1%
+    INS lists it without naming any paper (no signal)          26  27.1%
     not in INS at all                                          12  12.5%
 
 ADDED: own data deposits the tool finds for these INS papers that INS does not list
   in repositories outside GEO/SRA/dbGaP: 479 datasets from 316 papers (445 resolve)
   in GEO/SRA/dbGaP but absent from INS:   235 datasets from 169 papers
   code deposits (INS resources candidates): 665
-  outside GEO/SRA/dbGaP, by repository: PRIDE/ProteomeXchange 107, Zenodo 89, Synapse 55, MassIVE 46, EGA 42, Figshare 40, Mendeley Data 29, PDB 20, Metabolomics Workbench 18, EMDB 9, ArrayExpress 5, MetaboLights 5, Dryad 4, Dataverse 3, OSF 3, CELLxGENE 2, GDC project 1, GWAS Catalog 1
+  outside GEO/SRA/dbGaP, by repository: PRIDE/ProteomeXchange 107, Zenodo 89, Synapse 55, MassIVE 46, EGA 42, Figshare 40, Mendeley Data 29, PDB 20, Metabolomics Workbench 18, EMDB 9, MetaboLights 5, ArrayExpress 5, Dryad 4, OSF 3, Dataverse 3, CELLxGENE 2, GWAS Catalog 1, GDC project 1

@@ -57,7 +57,29 @@
   "dbGaP": {
    "INS attributes it to this paper (confirmed own)": 27,
    "total": 96,
-   "INS attributes it to OTHER papers only (likely reused)": 57,
+   "INS lists it without naming any paper (no signal)": 26,
+   "INS attributes it to OTHER papers only (likely reused)": 31,
+   "not in INS at all": 12
+  }
+ },
+ "own_vs_ins_sentence_rules_alone": {
+  "GEO": {
+   "INS attributes it to this paper (confirmed own)": 1536,
+   "total": 1753,
+   "not in INS at all": 156,
+   "INS attributes it to OTHER papers only (likely reused)": 61
+  },
+  "SRA/BioProject": {
+   "not in INS at all": 144,
+   "total": 180,
+   "INS attributes it to this paper (confirmed own)": 35,
+   "INS attributes it to OTHER papers only (likely reused)": 1
+  },
+  "dbGaP": {
+   "INS attributes it to this paper (confirmed own)": 27,
+   "total": 96,
+   "INS lists it without naming any paper (no signal)": 26,
+   "INS attributes it to OTHER papers only (likely reused)": 31,
    "not in INS at all": 12
   }
  },
@@ -78,14 +100,14 @@
    "PDB": 20,
    "Metabolomics Workbench": 18,
    "EMDB": 9,
-   "ArrayExpress": 5,
    "MetaboLights": 5,
+   "ArrayExpress": 5,
    "Dryad": 4,
-   "Dataverse": 3,
    "OSF": 3,
+   "Dataverse": 3,
    "CELLxGENE": 2,
-   "GDC project": 1,
-   "GWAS Catalog": 1
+   "GWAS Catalog": 1,
+   "GDC project": 1
   }
  }
 }

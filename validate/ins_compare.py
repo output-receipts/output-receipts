@@ -69,14 +69,17 @@ def main():
     our_pairs = {(pm, g) for pm, p in papers.items() for g in p["grants"]}
     pairs_in = {pr for pr in our_pairs if pr in ins_pub_pairs}
     pm_in = {pm for pm in papers if pm in ins_pmids}
-    snap = "2026-01-30"  # INS gather date of the downloaded tables; later papers could not be listed yet
+    # INS-Data release folder 2026-01-30/gathered-2026-02-17 (its dbGaP table is dated 2026-03-09): papers published
+    # after the gather date could not be listed yet
+    snap = "2026-02-17"
     pre = {pm for pm, p in papers.items() if (p.get("first_pub_date") or "9999") < snap}
     pre_pairs = {(pm, g) for pm in pre for g in papers[pm]["grants"]}
 
     # ---- own deposits (same set as the INS-candidate file)
     rows = list(read(ROOT / "data/output/ins_candidate_datasets.tsv"))
     missing, found = [], Counter()
-    same_paper, other_papers = [], []   # among dataset rows INS lists: does INS name one of the same papers?
+    # among dataset rows INS lists: does INS name one of the same papers, only other papers, or no paper at all?
+    same_paper, other_papers, no_paper = [], [], []
     for r in rows:
         acc = r["dataset_source_id"].strip().lower()
         repo = r["dataset_source_repo"]
@@ -89,7 +92,8 @@ def main():
         if not hit:
             missing.append(r)
         elif r["type"] == "dataset":
-            (same_paper if set(r["dataset_pmid"].split(";")) & ins_acc_pmids.get(acc, set()) else other_papers).append(r)
+            ins_pm = ins_acc_pmids.get(acc, set())
+            (same_paper if set(r["dataset_pmid"].split(";")) & ins_pm else other_papers if ins_pm else no_paper).append(r)
 
     ncbi = {"GEO", "SRA/BioProject", "dbGaP"}
     data_rows = [r for r in rows if r["type"] == "dataset"]
@@ -107,6 +111,8 @@ def main():
          f"    datasets INS attributes to the same paper (INS and the tool agree): {len(same_paper)}",
          f"    datasets INS attributes only to other papers (likely reused data the wording rules misjudged): "
          f"{len(other_papers)}  " + str(dict(Counter(r['dataset_source_repo'] for r in other_papers))),
+         f"    datasets INS lists without naming any paper (INS neither confirms nor contradicts the tool): "
+         f"{len(no_paper)}  " + str(dict(Counter(r['dataset_source_repo'] for r in no_paper))),
          f"  NOT listed in INS: {len(missing)}  (datasets: {len(data_missing)}; of those in GEO/SRA/dbGaP: "
          f"{sum(r['dataset_source_repo'] in ncbi for r in data_missing)}, in other repositories: "
          f"{sum(r['dataset_source_repo'] not in ncbi for r in data_missing)})",
@@ -137,6 +143,8 @@ def main():
           "own_datasets_not_in_ins": len(data_missing),
           "own_datasets_in_ins_same_paper": len(same_paper), "own_datasets_in_ins_other_papers_only": len(other_papers),
           "in_ins_other_papers_only_by_repository": dict(Counter(r["dataset_source_repo"] for r in other_papers)),
+          "own_datasets_in_ins_no_paper_named": len(no_paper),
+          "in_ins_no_paper_named_by_repository": dict(Counter(r["dataset_source_repo"] for r in no_paper)),
           "not_in_ins_resolving": sum(r["link_status"] == "RESOLVES" for r in data_missing),
           "not_in_ins_outside_ncbi": sum(r["dataset_source_repo"] not in ncbi for r in data_missing),
           "code_deposits": len(rows) - len(data_rows),

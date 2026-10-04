@@ -1,12 +1,12 @@
 {
- "generated": "2026-10-03",
+ "generated": "2026-10-04",
  "cohort": {
   "fy": 2024,
   "activity": "R01",
   "ic": "NCI",
   "award_type": "1"
  },
- "ins_tables_gathered": "2026-01-30",
+ "ins_tables_gathered": "2026-02-17",
  "awards": 589,
  "awards_with_an_own_dataset": 252,
  "awards_in_ins": 8,
@@ -17,7 +17,8 @@
  "own_datasets_confirmed_by_repository_record": 744,
  "own_datasets_already_in_ins": 135,
  "already_in_ins_under_the_same_paper": 102,
- "already_in_ins_under_other_papers_only": 33,
+ "already_in_ins_under_other_papers_only": 17,
+ "already_in_ins_with_no_paper_named": 16,
  "own_datasets_not_in_ins": 877,
  "not_in_ins_link_works": 840,
  "not_in_ins_outside_geo_sra_dbgap": 365,
@@ -210,7 +211,29 @@
    "dbGaP": {
     "INS attributes it to this paper (confirmed own)": 27,
     "total": 96,
-    "INS attributes it to OTHER papers only (likely reused)": 57,
+    "INS lists it without naming any paper (no signal)": 26,
+    "INS attributes it to OTHER papers only (likely reused)": 31,
+    "not in INS at all": 12
+   }
+  },
+  "own_vs_ins_sentence_rules_alone": {
+   "GEO": {
+    "INS attributes it to this paper (confirmed own)": 1536,
+    "total": 1753,
+    "not in INS at all": 156,
+    "INS attributes it to OTHER papers only (likely reused)": 61
+   },
+   "SRA/BioProject": {
+    "not in INS at all": 144,
+    "total": 180,
+    "INS attributes it to this paper (confirmed own)": 35,
+    "INS attributes it to OTHER papers only (likely reused)": 1
+   },
+   "dbGaP": {
+    "INS attributes it to this paper (confirmed own)": 27,
+    "total": 96,
+    "INS lists it without naming any paper (no signal)": 26,
+    "INS attributes it to OTHER papers only (likely reused)": 31,
     "not in INS at all": 12
    }
   },
@@ -237,8 +260,8 @@
     "OSF": 3,
     "Dataverse": 3,
     "CELLxGENE": 2,
-    "GDC project": 1,
-    "GWAS Catalog": 1
+    "GWAS Catalog": 1,
+    "GDC project": 1
    }
   }
  }

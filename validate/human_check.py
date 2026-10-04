@@ -97,7 +97,7 @@ const save=()=>{{try{{localStorage.setItem(K,JSON.stringify(A))}}catch(e){{}};do
 const val=a=>a&&typeof a==='object'?a.v:a;
 document.querySelectorAll('.btns').forEach(b=>{{const k=b.dataset.key;b.querySelectorAll('button').forEach(x=>{{if(val(A[k])===x.dataset.v)x.classList.add('on');
 x.onclick=()=>{{A[k]={{v:x.dataset.v,t:Date.now()}};b.querySelectorAll('button').forEach(y=>y.classList.toggle('on',y===x));save()}}}})}});
-document.getElementById('copy').onclick=()=>{{const t=JSON.stringify(A);navigator.clipboard.writeText(t).then(()=>document.getElementById('msg').textContent='Copied. Paste it to Claude.',()=>{{document.getElementById('msg').textContent='Copy failed; select this text:';const p=document.createElement('pre');p.textContent=t;document.getElementById('bar').append(p)}})}};
+document.getElementById('copy').onclick=()=>{{const t=JSON.stringify(A);navigator.clipboard.writeText(t).then(()=>document.getElementById('msg').textContent='Copied. Paste it into the scoring step.',()=>{{document.getElementById('msg').textContent='Copy failed; select this text:';const p=document.createElement('pre');p.textContent=t;document.getElementById('bar').append(p)}})}};
 save();
 </script></body></html>"""
     page = page.replace("const K='human_check_answers'", f"const K='{out_name}'")

@@ -40,7 +40,7 @@ RECORD_REPOS = ("GEO", "SRA/BioProject", "PRIDE/ProteomeXchange", "PDB", "EMDB")
 STRONG = ("cites_paper", "names_award")
 CONFIRMED = STRONG + ("authors",)
 TIER_TEXT = {"cites_paper": "record cites this paper", "names_award": "record names this award",
-             "authors": "record is by this paper's authors", "contradicted": "record points to other work",
+             "authors": "record names an author of this paper", "contradicted": "record points to other work",
              "": "paper only"}
 _GRANT = re.compile(r"\b([A-Z]\d{2})[\s-]?([A-Z]{2})[\s-]?(\d{6})\b")
 _LAB = re.compile(r"\b(?:lab|laboratory|group|team)\b", re.I)
