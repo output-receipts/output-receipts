@@ -1,0 +1,10 @@
+Scale and curation numbers
+candidate rows: 1334 = unique (repository, accession) pairs: 1334
+awards (of 589) with >=1 own dataset: 252; with >=1 own dataset or code deposit: 280
+datasets not in INS: 877
+  tier 1, resolves and confirmed by the repository's own record: 637 (73%)
+  tier 2, resolves and an explicit own-deposit sentence in the availability statement (paper only): 118 (13%)
+  tier 3, everything else (curator looks first): 122 (14%)
+NCI new (type 1) awards, all activity codes, per fiscal year (RePORTER): {2023: 2966, 2024: 2612, 2025: 2263}
+not-in-INS datasets per FY2024 R01 award: 1.49
+(portfolio extrapolation is rough: other activity codes publish at different rates)

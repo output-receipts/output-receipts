@@ -1,0 +1,38 @@
+# HTTP cache (large; rebuilt automatically) and intermediate work files
+data/cache/
+data/work/
+data/review/needs_review.jsonl
+data_test/
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local-only: early probe (kept in the project notes) and pre-fix snapshots
+pilot_probe_v0.py
+validate/out/*_before_fixes.json
+
+# Local outputs of a run. What is published is built from them by `python site/build.py`:
+# public/, index.html, receipts.html. Kept local on purpose: links that do not resolve listed by award,
+# per-paper categories, and the AI reviewers' per-row answers (their aggregate results are in VALIDATION.md and
+# public/summary.json).
+data/output/
+data/review/
+validate/out/*
+!validate/out/ins_benchmark_report.txt
+!validate/out/ins_benchmark.json
+!validate/out/ins_benchmark_added.tsv
+!validate/out/ins_compare_report.txt
+!validate/out/ins_compare.json
+!validate/out/scale_report.txt
+!validate/out/attribution_report.txt

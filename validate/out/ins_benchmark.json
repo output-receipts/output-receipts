@@ -1,0 +1,91 @@
+{
+ "args": {
+  "from": "2023-01-01",
+  "to": "2025-12-31",
+  "extra": 1000,
+  "seed": 7
+ },
+ "papers": 2435,
+ "checkable": 2057,
+ "recall_by_paper_geo": {
+  "papers": 1221,
+  "named": 1169,
+  "own_text": 1070,
+  "own": 1122
+ },
+ "recall": {
+  "GEO": {
+   "pairs": 2577,
+   "found in text": 1722,
+   "own, sentence rules alone": 1531,
+   "own, after the record check": 1623,
+   "unclear (sent to review)": 0,
+   "called reused": 99,
+   "not in the open full text": 855
+  },
+  "SRA/BioProject": {
+   "pairs": 2046,
+   "found in text": 1301,
+   "own, sentence rules alone": 1166,
+   "own, after the record check": 1238,
+   "unclear (sent to review)": 0,
+   "called reused": 63,
+   "not in the open full text": 745
+  },
+  "dbGaP": {
+   "pairs": 51,
+   "found in text": 33,
+   "own, sentence rules alone": 27,
+   "own, after the record check": 27,
+   "unclear (sent to review)": 1,
+   "called reused": 5,
+   "not in the open full text": 18
+  }
+ },
+ "own_vs_ins": {
+  "GEO": {
+   "INS attributes it to this paper (confirmed own)": 1628,
+   "total": 1734,
+   "not in INS at all": 84,
+   "INS attributes it to OTHER papers only (likely reused)": 22
+  },
+  "SRA/BioProject": {
+   "not in INS at all": 142,
+   "total": 179,
+   "INS attributes it to this paper (confirmed own)": 37
+  },
+  "dbGaP": {
+   "INS attributes it to this paper (confirmed own)": 27,
+   "total": 96,
+   "INS attributes it to OTHER papers only (likely reused)": 57,
+   "not in INS at all": 12
+  }
+ },
+ "added": {
+  "outside_ncbi": 479,
+  "outside_ncbi_resolving": 445,
+  "outside_ncbi_papers": 316,
+  "ncbi_not_in_ins": 235,
+  "code": 665,
+  "outside_ncbi_by_repo": {
+   "PRIDE/ProteomeXchange": 107,
+   "Zenodo": 89,
+   "Synapse": 55,
+   "MassIVE": 46,
+   "EGA": 42,
+   "Figshare": 40,
+   "Mendeley Data": 29,
+   "PDB": 20,
+   "Metabolomics Workbench": 18,
+   "EMDB": 9,
+   "ArrayExpress": 5,
+   "MetaboLights": 5,
+   "Dryad": 4,
+   "Dataverse": 3,
+   "OSF": 3,
+   "CELLxGENE": 2,
+   "GDC project": 1,
+   "GWAS Catalog": 1
+  }
+ }
+}

@@ -1,0 +1,134 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">
+<title>Output Receipts</title>
+<style>
+:root{--bg:#fff;--ink:#1b1f24;--muted:#5b6470;--acc:#0b5cad;--card:#f4f6f9;--bar:#c9d6e3;--line:#dde3ea}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#111418;--ink:#e6e9ee;--muted:#9aa4b0;--acc:#6aa9ff;--card:#1b2027;--bar:#33404f;--line:#2a313b}}
+:root[data-theme=dark]{--bg:#111418;--ink:#e6e9ee;--muted:#9aa4b0;--acc:#6aa9ff;--card:#1b2027;--bar:#33404f;--line:#2a313b}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Segoe UI",system-ui,sans-serif}
+main{max-width:980px;margin:0 auto;padding:24px 16px 48px} h1{margin:0 0 4px;font-size:28px} h2{margin:28px 0 8px;font-size:20px}
+a{color:var(--acc)} .muted{color:var(--muted)} .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:14px 0}
+.tile{background:var(--card);border-radius:10px;padding:12px} .big{font-size:26px;font-weight:700;color:var(--acc)}
+.start{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px} .start a{display:block;background:var(--card);border-radius:10px;padding:12px;text-decoration:none;color:var(--ink)}
+.start b{color:var(--acc)} table{border-collapse:collapse;width:100%} td,th{padding:4px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+td.n{text-align:right;white-space:nowrap} .barcell{width:55%} .bar{background:var(--bar);height:12px;position:relative} .hit{background:var(--acc);height:12px}
+ol li,ul li{margin:3px 0} .cols{display:grid;grid-template-columns:1fr 1fr;gap:20px} @media(max-width:700px){.cols{grid-template-columns:1fr} td,th{padding:4px 3px;font-size:14px} td.n{white-space:normal}} .tw{overflow-x:auto}
+code{font-size:14px}
+</style></head><body><main>
+<h1>Output Receipts</h1>
+<p class=muted>A discovery aid that connects the data NCI's awards have shared back to NCI's catalog. Public data only;
+runs without AI.</p>
+<p>For a set of NIH awards, Output Receipts follows each award to its papers, reads what each paper says it
+deposited, checks each deposit against the repository's own record, and writes the results as candidate rows for the
+<a href="https://studycatalog.cancer.gov">Index of NCI Studies (INS)</a> and as a receipt for each award. It is a
+starting point for curation, not a replacement for it. This run covers the 589 new R01 awards NCI made in
+fiscal year 2024.</p>
+
+<h2>What this run found</h2>
+<div class=tiles><div class=tile><div class=big>877</div><div>candidate dataset records that INS does not list yet</div></div><div class=tile><div class=big>637</div><div>of them: the link works and the repository&#x27;s own record confirms the deposit</div></div><div class=tile><div class=big>365</div><div>of them are in repositories outside GEO, SRA and dbGaP</div></div><div class=tile><div class=big>252 of 589</div><div>awards already have at least one dataset their papers report depositing</div></div><div class=tile><div class=big>102</div><div>more are already in INS under the same paper: INS and the tool agree</div></div></div>
+<p class=muted>Compared with NCI's public <a href="https://github.com/CBIIT/INS-Data">INS-Data</a> tables (gathered
+2026-01-30). INS is built around curated programs and NCBI's publication links; it includes
+8 of these 589 investigator-initiated awards. The candidates here are the part of the
+portfolio it was not built to reach.</p>
+
+<h2>Three tiers: what is known, and what a curator does</h2>
+<div class=tw><table><tr><th>Tier</th><th>What is true of the row</th><th>Rows</th><th>Blind review: both reviewers confirm</th><th>Curator action</th></tr>
+<tr><td><b>1</b></td><td>The link works and the repository&#x27;s own record confirms the deposit: it cites the paper, names the award, or lists a submitter whose name matches an author</td><td class=n>637 (73%)</td><td class=n>50 of 50</td><td>Quick check: open the record</td></tr><tr><td><b>2</b></td><td>The link works and the paper states the deposit explicitly; the record is silent or cannot be read</td><td class=n>118 (13%)</td><td class=n>32 of 40</td><td>Read the quoted sentence</td></tr><tr><td><b>3</b></td><td>The wording is weaker, or the link is dead, private or unverified</td><td class=n>122 (14%)</td><td class=n>29 of 40</td><td>Open the paper; route link problems to the investigator</td></tr></table></div>
+<p class=muted>Rows = the 877 dataset candidates not in INS. Blind review: two AI models from different developers,
+neither shown the tool's answer, judged the same 130 rows from the paper's text; weighted to all rows, both confirm about 93%.
+That is agreement with AI reviewers, not a human gold standard. Details: <a href="https://github.com/output-receipts/output-receipts/blob/main/VALIDATION.md">VALIDATION.md</a>.</p>
+
+<div class=cols><div>
+<h2>What is looked up</h2>
+<ul><li>The record exists and is public: 1,283 of 1,329 identifiers checked.
+5 more exist behind an access request; 41 do not resolve, 21 of them still private.</li>
+<li>The repository's record cites the paper, names the award, or lists a submitter whose name matches an author
+(744 of 1,012 datasets).</li>
+<li>NIH RePORTER links the paper to the award.</li>
+<li>INS lists the dataset, or does not.</li></ul>
+<p class=muted>Exact, and anyone can check each one in a click.</p>
+</div><div>
+<h2>What is inferred, and what is not known</h2>
+<ul><li><b>Inferred from wording:</b> whether a deposit is the paper's own or data it reused. The sentence is in every row.</li>
+<li><b>Not determined:</b> 253 of 2,086 papers have no open full text, and the
+tool does not guess.</li>
+<li><b>Not claimed:</b> which award paid for a dataset when a paper cites several; rows say "associated with, per
+RePORTER", as INS does for publications.</li></ul>
+</div></div>
+
+<h2>Open these first</h2>
+<div class=start>
+<a href="public/candidates_not_in_ins.tsv"><b>The candidate rows</b><br>datasets INS does not list, in INS's dataset-table columns, each with its paper, evidence sentence, record check and tier (TSV; opens in Excel)</a>
+<a href="receipts.html"><b>Receipts</b><br>what each award's papers shared, with links; searchable</a>
+<a href="https://github.com/output-receipts/output-receipts/blob/main/FLOWCHART.md"><b>The process on one page</b><br>two flowcharts: the pipeline, and how a deposit is judged</a>
+<a href="https://github.com/output-receipts/output-receipts/blob/main/HOW_IT_WORKS.md"><b>How it works</b><br>plain language, with real examples</a>
+<a href="https://github.com/output-receipts/output-receipts/blob/main/VALIDATION.md"><b>How accurate it is</b><br>every measurement, including the weak spots</a>
+<a href="https://github.com/output-receipts/output-receipts"><b>Code</b><br>standard-library Python; run it yourself in about an hour</a>
+</div>
+
+<div class=cols><div>
+<h2>Own datasets by repository</h2>
+<p class=muted>All 1,012 datasets found; the dark part is already in INS.</p>
+<table><tr><td>GEO</td><td class=barcell><div class=bar style='width:100.0%'><div class=hit style='width:19.5%'></div></div></td><td class=n>533</td></tr><tr><td>PRIDE/ProteomeXchange</td><td class=barcell><div class=bar style='width:15.0%'><div class=hit style='width:0.0%'></div></div></td><td class=n>80</td></tr><tr><td>SRA/BioProject</td><td class=barcell><div class=bar style='width:14.3%'><div class=hit style='width:3.9%'></div></div></td><td class=n>76</td></tr><tr><td>Zenodo</td><td class=barcell><div class=bar style='width:12.2%'><div class=hit style='width:0.0%'></div></div></td><td class=n>65</td></tr><tr><td>dbGaP</td><td class=barcell><div class=bar style='width:7.1%'><div class=hit style='width:73.7%'></div></div></td><td class=n>38</td></tr><tr><td>EMDB</td><td class=barcell><div class=bar style='width:6.9%'><div class=hit style='width:0.0%'></div></div></td><td class=n>37</td></tr><tr><td>Synapse</td><td class=barcell><div class=bar style='width:5.3%'><div class=hit style='width:0.0%'></div></div></td><td class=n>28</td></tr><tr><td>EGA</td><td class=barcell><div class=bar style='width:4.9%'><div class=hit style='width:0.0%'></div></div></td><td class=n>26</td></tr><tr><td>PDB</td><td class=barcell><div class=bar style='width:4.7%'><div class=hit style='width:0.0%'></div></div></td><td class=n>25</td></tr><tr><td>MassIVE</td><td class=barcell><div class=bar style='width:4.1%'><div class=hit style='width:0.0%'></div></div></td><td class=n>22</td></tr><tr><td>12 more</td><td class=barcell><div class=bar style='width:15.4%'><div class=hit style='width:0.0%'></div></div></td><td class=n>82</td></tr></table>
+</div><div>
+<h2>Other measurements</h2>
+<table>
+<tr><td>Own GEO series not linked from their paper's PubMed record</td><td class=n><b>106 of 533</b></td></tr>
+<tr><td>Papers whose deposits are all outside GEO, SRA and dbGaP</td><td class=n><b>117</b></td></tr>
+<tr><td>Code and software deposits found (candidates for INS's resources)</td><td class=n><b>322</b></td></tr>
+<tr><td>Papers with open full text</td><td class=n><b>1,833 of 2,086</b></td></tr>
+</table>
+</div></div>
+
+<h2>A second check, against NCI's own records (no AI)</h2>
+<p>The tool was also run on 2,057 papers from programs INS already curates, and compared with the
+datasets INS itself attributes to those papers.</p>
+<table>
+<tr><td>Papers with a GEO series in INS where the tool, reading only the paper, called at least one of them the paper's own</td><td class=n><b>1,070 of 1,221</b></td></tr>
+<tr><td>The same, after the record check</td><td class=n><b>1,122 of 1,221</b></td></tr>
+<tr><td>GEO series the tool called a paper's own, where INS names the same paper</td><td class=n><b>1,628 of 1,734</b></td></tr>
+<tr><td>Datasets found for those papers in repositories outside GEO, SRA and dbGaP, which INS does not list</td><td class=n><b>479</b></td></tr>
+</table>
+<p class=muted>The two methods are complementary: INS's link harvesting also finds series that a paper's open text
+never names, and reading the paper finds deposits in repositories that publication links do not cover.</p>
+
+<h2>What a receipt looks like</h2>
+<p class=muted>One award from this cohort, shown without names. The <a href="receipts.html">receipts page</a> has every
+award, with links to each paper and deposit.</p>
+<table><tr><th>Paper</th><th>What it shared &middot; link check &middot; record check</th></tr><tr><td>Paper 1 (2025)</td><td>GEO (data) &middot; link works &middot; record cites this paper; GitHub (code) &middot; link works &middot; paper only (repository record not read); PRIDE/ProteomeXchange (data) &middot; link works &middot; record is by this paper&#x27;s authors; PRIDE/ProteomeXchange (data) &middot; link works &middot; record is by this paper&#x27;s authors; Zenodo (code) &middot; link works &middot; record is by this paper&#x27;s authors</td></tr><tr><td>Paper 2 (2025)</td><td>GEO (data) &middot; link works &middot; record cites this paper; GEO (data) &middot; link works &middot; record cites this paper</td></tr></table>
+
+<h2>How it works</h2>
+<ol>
+<li><b>Awards to papers.</b> NIH RePORTER's award&ndash;publication links, with INS's rule excluding papers published more than a year before the award started.</li>
+<li><b>Papers to full text.</b> Open-access XML from PubMed Central and Europe PMC.</li>
+<li><b>Statements and identifiers.</b> The data availability statement, and identifiers for more than 25 repositories.</li>
+<li><b>Own or reused?</b> Judged from the sentence: &ldquo;generated in this study&hellip; deposited in&rdquo; versus &ldquo;downloaded from&rdquo;, &ldquo;previously published&rdquo;, TCGA.</li>
+<li><b>Link and record check.</b> Each deposit is looked up in its repository: does it exist, is it public, and which paper, award and people does the record name?</li>
+<li><b>Outputs.</b> Candidate rows in INS's format with a tier, and a receipt per award.</li>
+</ol>
+
+<div class=cols><div>
+<h2>What it is good for</h2>
+<ul><li>Finds deposits in any repository, from the authors' own statements.</li>
+<li>Hands curators rows with evidence and a stated confidence, so checking replaces searching.</li>
+<li>Transparent rules and public lookups: free, repeatable, no credentials, no AI needed to run.</li>
+<li>Works for any NIH Institute, activity code or fiscal year.</li></ul>
+</div><div>
+<h2>Limits</h2>
+<ul><li>Reads only open full text; not supplementary files.</li>
+<li>Own-versus-reused is a judgment from wording; tier 3 is where it is weakest.</li>
+<li>Some repositories (dbGaP, EGA, MassIVE, GitHub) have no record the tool can compare yet. dbGaP is the weakest:
+INS attributes 28 of the 38 dbGaP studies found here to earlier papers, so they are
+probably reused consortium data.</li>
+<li>Reports what is findable, never compliance with a data sharing plan.</li>
+<li>Dead and private links are counted here but listed only in the local outputs, for the investigator to fix.</li></ul>
+</div></div>
+
+<h2>Use of AI</h2>
+<p>Running the tool requires no AI. An AI coding assistant helped write the code; AI models served as the blind
+reviewers for the accuracy checks; and AI labelled the category of papers the rules could not categorize, which does
+not affect the dataset rows. Details: <a href="https://github.com/output-receipts/output-receipts/blob/main/AI_REVIEW.md">AI_REVIEW.md</a>.</p>
+
+<p class=muted>Code: <a href="https://github.com/output-receipts/output-receipts">github.com/output-receipts/output-receipts</a> (Apache-2.0) &middot; maintainer's guide:
+<a href="https://github.com/output-receipts/output-receipts/blob/main/MAINTAINING.md">MAINTAINING.md</a> &middot; data generated 2026-10-03 &middot;
+reproduce: <code>python -m receipts run --fy 2024 --activity R01 --ic NCI</code></p>
+</main></body></html>

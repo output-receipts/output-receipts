@@ -1,0 +1,6 @@
+Attribution of papers to FY2024 NCI new R01 awards
+papers: 2086; RePORTER returned links for 2086
+papers linked to >1 award (any IC, any year): 1843 (88%)
+distribution of linked-award counts: {1: 243, 2: 368, 3: 312, 4: 285, 5: 228, 6: 144, 7: 104, 8: 111, 9: 74, 10: 49}
+papers with own data deposits: 525; of those linked to >1 award: 495 (94%)
+papers published before their FY2024 award started (kept: within the INS 365-day rule): 128 (6%); with own data deposits: 20

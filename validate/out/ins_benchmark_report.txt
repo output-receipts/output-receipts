@@ -1,0 +1,49 @@
+Benchmark against INS's own paper-to-dataset records (no AI)
+window 2023-01-01 to 2025-12-31; papers: 2435 (1435 with an INS dataset + 1000 random others); open full text: 2057 (84.5%)
+
+RECALL BY PAPER: 1221 papers with open full text and at least one GEO series in INS
+  at least one of them is named in the open full text       1169  95.7%
+  at least one called the paper's own, sentence rules alone  1070  87.6%
+  at least one called the paper's own, after the record check 1122  91.9%
+
+RECALL BY DATASET: datasets INS attributes to a paper (paper has open full text)
+  GEO: 2577 (paper, dataset) pairs
+    found in text                     1722  66.8% of pairs
+    own, sentence rules alone         1531  59.4% of pairs; 88.9% of those found in text
+    own, after the record check       1623  63.0% of pairs; 94.3% of those found in text
+    unclear (sent to review)             0  0.0% of pairs; 0.0% of those found in text
+    called reused                       99  3.8% of pairs; 5.7% of those found in text
+    not in the open full text          855  33.2% of pairs
+  SRA/BioProject: 2046 (paper, dataset) pairs
+    found in text                     1301  63.6% of pairs
+    own, sentence rules alone         1166  57.0% of pairs; 89.6% of those found in text
+    own, after the record check       1238  60.5% of pairs; 95.2% of those found in text
+    unclear (sent to review)             0  0.0% of pairs; 0.0% of those found in text
+    called reused                       63  3.1% of pairs; 4.8% of those found in text
+    not in the open full text          745  36.4% of pairs
+  dbGaP: 51 (paper, dataset) pairs
+    found in text                       33  64.7% of pairs
+    own, sentence rules alone           27  52.9% of pairs; 81.8% of those found in text
+    own, after the record check         27  52.9% of pairs; 81.8% of those found in text
+    unclear (sent to review)             1  2.0% of pairs; 3.0% of those found in text
+    called reused                        5  9.8% of pairs; 15.2% of those found in text
+    not in the open full text           18  35.3% of pairs
+
+WHAT THE TOOL CALLS OWN, checked against INS (own data deposits in GEO/SRA/dbGaP)
+  GEO: 1734
+    INS attributes it to this paper (confirmed own)          1628  93.9%
+    not in INS at all                                          84  4.8%
+    INS attributes it to OTHER papers only (likely reused)     22  1.3%
+  SRA/BioProject: 179
+    not in INS at all                                         142  79.3%
+    INS attributes it to this paper (confirmed own)            37  20.7%
+  dbGaP: 96
+    INS attributes it to OTHER papers only (likely reused)     57  59.4%
+    INS attributes it to this paper (confirmed own)            27  28.1%
+    not in INS at all                                          12  12.5%
+
+ADDED: own data deposits the tool finds for these INS papers that INS does not list
+  in repositories outside GEO/SRA/dbGaP: 479 datasets from 316 papers (445 resolve)
+  in GEO/SRA/dbGaP but absent from INS:   235 datasets from 169 papers
+  code deposits (INS resources candidates): 665
+  outside GEO/SRA/dbGaP, by repository: PRIDE/ProteomeXchange 107, Zenodo 89, Synapse 55, MassIVE 46, EGA 42, Figshare 40, Mendeley Data 29, PDB 20, Metabolomics Workbench 18, EMDB 9, ArrayExpress 5, MetaboLights 5, Dryad 4, Dataverse 3, OSF 3, CELLxGENE 2, GDC project 1, GWAS Catalog 1

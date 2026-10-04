@@ -1,0 +1,109 @@
+{
+ "ins_snapshot": "2026-01-30",
+ "awards": 589,
+ "awards_in_ins": 8,
+ "pairs_pre_snapshot": 1639,
+ "pairs_pre_snapshot_in_ins": 16,
+ "own_datasets": 1012,
+ "own_datasets_in_ins": 135,
+ "own_datasets_not_in_ins": 877,
+ "own_datasets_in_ins_same_paper": 102,
+ "own_datasets_in_ins_other_papers_only": 33,
+ "in_ins_other_papers_only_by_repository": {
+  "GEO": 5,
+  "dbGaP": 28
+ },
+ "not_in_ins_resolving": 840,
+ "not_in_ins_outside_ncbi": 365,
+ "code_deposits": 322,
+ "datasets_by_repository": {
+  "GEO": {
+   "detected": 533,
+   "in_ins": 104
+  },
+  "PRIDE/ProteomeXchange": {
+   "detected": 80,
+   "in_ins": 0
+  },
+  "SRA/BioProject": {
+   "detected": 76,
+   "in_ins": 3
+  },
+  "Zenodo": {
+   "detected": 65,
+   "in_ins": 0
+  },
+  "dbGaP": {
+   "detected": 38,
+   "in_ins": 28
+  },
+  "EMDB": {
+   "detected": 37,
+   "in_ins": 0
+  },
+  "Synapse": {
+   "detected": 28,
+   "in_ins": 0
+  },
+  "EGA": {
+   "detected": 26,
+   "in_ins": 0
+  },
+  "PDB": {
+   "detected": 25,
+   "in_ins": 0
+  },
+  "MassIVE": {
+   "detected": 22,
+   "in_ins": 0
+  },
+  "Mendeley Data": {
+   "detected": 18,
+   "in_ins": 0
+  },
+  "Figshare": {
+   "detected": 17,
+   "in_ins": 0
+  },
+  "Metabolomics Workbench": {
+   "detected": 15,
+   "in_ins": 0
+  },
+  "GWAS Catalog": {
+   "detected": 8,
+   "in_ins": 0
+  },
+  "ArrayExpress": {
+   "detected": 6,
+   "in_ins": 0
+  },
+  "Dataverse": {
+   "detected": 4,
+   "in_ins": 0
+  },
+  "CELLxGENE": {
+   "detected": 3,
+   "in_ins": 0
+  },
+  "Dryad": {
+   "detected": 3,
+   "in_ins": 0
+  },
+  "MetaboLights": {
+   "detected": 3,
+   "in_ins": 0
+  },
+  "OSF": {
+   "detected": 2,
+   "in_ins": 0
+  },
+  "TCIA/IDC link": {
+   "detected": 2,
+   "in_ins": 0
+  },
+  "TCIA": {
+   "detected": 1,
+   "in_ins": 0
+  }
+ }
+}

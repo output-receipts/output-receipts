@@ -1,0 +1,40 @@
+Comparison with the Index of NCI Studies (INS-Data public tables)
+INS tables: 3036 core projects, 64174 PMIDs, 13688 GEO/SRA/dbGaP datasets, 271 resources
+
+FY2024 NCI new R01 awards in this run: 589; listed in INS: 8
+papers in this run: 2086; PMID listed anywhere in INS: 274; (paper, award) pairs listed in INS: 16 of 2185
+  published before the INS snapshot (2026-01-30): 1567 papers; their (paper, award) pairs listed in INS: 16 of 1639
+
+own deposits detected: 1334 (1012 datasets, 322 code/software)
+  listed in INS: 135
+    datasets INS attributes to the same paper (INS and the tool agree): 102
+    datasets INS attributes only to other papers (likely reused data the wording rules misjudged): 33  {'GEO': 5, 'dbGaP': 28}
+  NOT listed in INS: 1199  (datasets: 877; of those in GEO/SRA/dbGaP: 512, in other repositories: 365)
+  resolvable among missing datasets: 840
+
+by repository (listed in INS / detected):
+  GEO                       104 / 533
+  GitHub                      0 / 237
+  Zenodo                      0 / 130
+  PRIDE/ProteomeXchange       0 / 80
+  SRA/BioProject              3 / 76
+  dbGaP                      28 / 38
+  EMDB                        0 / 37
+  Synapse                     0 / 30
+  EGA                         0 / 26
+  Figshare                    0 / 26
+  PDB                         0 / 25
+  MassIVE                     0 / 22
+  Mendeley Data               0 / 19
+  Metabolomics Workbench      0 / 15
+  GWAS Catalog                0 / 8
+  ArrayExpress                0 / 6
+  Dataverse                   0 / 5
+  Dryad                       0 / 4
+  CELLxGENE                   0 / 3
+  Code Ocean                  0 / 3
+  MetaboLights                0 / 3
+  OSF                         0 / 3
+  GitLab                      0 / 2
+  TCIA/IDC link               0 / 2
+  TCIA                        0 / 1

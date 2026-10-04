@@ -1,0 +1,245 @@
+{
+ "generated": "2026-10-03",
+ "cohort": {
+  "fy": 2024,
+  "activity": "R01",
+  "ic": "NCI",
+  "award_type": "1"
+ },
+ "ins_tables_gathered": "2026-01-30",
+ "awards": 589,
+ "awards_with_an_own_dataset": 252,
+ "awards_in_ins": 8,
+ "papers_in_scope": 2086,
+ "papers_with_open_full_text": 1833,
+ "own_datasets": 1012,
+ "own_datasets_studies": 986,
+ "own_datasets_confirmed_by_repository_record": 744,
+ "own_datasets_already_in_ins": 135,
+ "already_in_ins_under_the_same_paper": 102,
+ "already_in_ins_under_other_papers_only": 33,
+ "own_datasets_not_in_ins": 877,
+ "not_in_ins_link_works": 840,
+ "not_in_ins_outside_geo_sra_dbgap": 365,
+ "not_in_ins_by_tier": {
+  "1": 637,
+  "2": 118,
+  "3": 122
+ },
+ "code_deposits": 322,
+ "identifiers_checked": 1329,
+ "identifiers_not_resolving": 41,
+ "records_still_private": 21,
+ "own_geo_series": 533,
+ "own_geo_series_not_linked_from_pubmed": 106,
+ "paper_categories_count": {
+  "PUBLIC_REPOSITORY": 663,
+  "CONTROLLED_ACCESS": 26,
+  "ON_REQUEST": 294,
+  "IN_ARTICLE": 149,
+  "REUSED_ONLY": 48,
+  "NO_DATA_GENERATED": 186,
+  "NO_STATEMENT": 443,
+  "NOT_CHECKABLE": 253,
+  "NEEDS_REVIEW": 24
+ },
+ "datasets_by_repository": {
+  "GEO": {
+   "detected": 533,
+   "in_ins": 104
+  },
+  "PRIDE/ProteomeXchange": {
+   "detected": 80,
+   "in_ins": 0
+  },
+  "SRA/BioProject": {
+   "detected": 76,
+   "in_ins": 3
+  },
+  "Zenodo": {
+   "detected": 65,
+   "in_ins": 0
+  },
+  "dbGaP": {
+   "detected": 38,
+   "in_ins": 28
+  },
+  "EMDB": {
+   "detected": 37,
+   "in_ins": 0
+  },
+  "Synapse": {
+   "detected": 28,
+   "in_ins": 0
+  },
+  "EGA": {
+   "detected": 26,
+   "in_ins": 0
+  },
+  "PDB": {
+   "detected": 25,
+   "in_ins": 0
+  },
+  "MassIVE": {
+   "detected": 22,
+   "in_ins": 0
+  },
+  "Mendeley Data": {
+   "detected": 18,
+   "in_ins": 0
+  },
+  "Figshare": {
+   "detected": 17,
+   "in_ins": 0
+  },
+  "Metabolomics Workbench": {
+   "detected": 15,
+   "in_ins": 0
+  },
+  "GWAS Catalog": {
+   "detected": 8,
+   "in_ins": 0
+  },
+  "ArrayExpress": {
+   "detected": 6,
+   "in_ins": 0
+  },
+  "Dataverse": {
+   "detected": 4,
+   "in_ins": 0
+  },
+  "CELLxGENE": {
+   "detected": 3,
+   "in_ins": 0
+  },
+  "Dryad": {
+   "detected": 3,
+   "in_ins": 0
+  },
+  "MetaboLights": {
+   "detected": 3,
+   "in_ins": 0
+  },
+  "OSF": {
+   "detected": 2,
+   "in_ins": 0
+  },
+  "TCIA/IDC link": {
+   "detected": 2,
+   "in_ins": 0
+  },
+  "TCIA": {
+   "detected": 1,
+   "in_ins": 0
+  }
+ },
+ "blind_review_by_tier": {
+  "1": {
+   "n": 50,
+   "both": 50,
+   "any": 50
+  },
+  "2": {
+   "n": 40,
+   "both": 32,
+   "any": 40
+  },
+  "3": {
+   "n": 40,
+   "both": 29,
+   "any": 30
+  }
+ },
+ "blind_review_both_confirm_weighted_pct": 93.5,
+ "benchmark_against_ins_records": {
+  "args": {
+   "from": "2023-01-01",
+   "to": "2025-12-31",
+   "extra": 1000,
+   "seed": 7
+  },
+  "papers": 2435,
+  "checkable": 2057,
+  "recall_by_paper_geo": {
+   "papers": 1221,
+   "named": 1169,
+   "own_text": 1070,
+   "own": 1122
+  },
+  "recall": {
+   "GEO": {
+    "pairs": 2577,
+    "found in text": 1722,
+    "own, sentence rules alone": 1531,
+    "own, after the record check": 1623,
+    "unclear (sent to review)": 0,
+    "called reused": 99,
+    "not in the open full text": 855
+   },
+   "SRA/BioProject": {
+    "pairs": 2046,
+    "found in text": 1301,
+    "own, sentence rules alone": 1166,
+    "own, after the record check": 1238,
+    "unclear (sent to review)": 0,
+    "called reused": 63,
+    "not in the open full text": 745
+   },
+   "dbGaP": {
+    "pairs": 51,
+    "found in text": 33,
+    "own, sentence rules alone": 27,
+    "own, after the record check": 27,
+    "unclear (sent to review)": 1,
+    "called reused": 5,
+    "not in the open full text": 18
+   }
+  },
+  "own_vs_ins": {
+   "GEO": {
+    "INS attributes it to this paper (confirmed own)": 1628,
+    "total": 1734,
+    "not in INS at all": 84,
+    "INS attributes it to OTHER papers only (likely reused)": 22
+   },
+   "SRA/BioProject": {
+    "not in INS at all": 142,
+    "total": 179,
+    "INS attributes it to this paper (confirmed own)": 37
+   },
+   "dbGaP": {
+    "INS attributes it to this paper (confirmed own)": 27,
+    "total": 96,
+    "INS attributes it to OTHER papers only (likely reused)": 57,
+    "not in INS at all": 12
+   }
+  },
+  "added": {
+   "outside_ncbi": 479,
+   "outside_ncbi_resolving": 445,
+   "outside_ncbi_papers": 316,
+   "ncbi_not_in_ins": 235,
+   "code": 665,
+   "outside_ncbi_by_repo": {
+    "PRIDE/ProteomeXchange": 107,
+    "Zenodo": 89,
+    "Synapse": 55,
+    "MassIVE": 46,
+    "EGA": 42,
+    "Figshare": 40,
+    "Mendeley Data": 29,
+    "PDB": 20,
+    "Metabolomics Workbench": 18,
+    "EMDB": 9,
+    "MetaboLights": 5,
+    "ArrayExpress": 5,
+    "Dryad": 4,
+    "OSF": 3,
+    "Dataverse": 3,
+    "CELLxGENE": 2,
+    "GDC project": 1,
+    "GWAS Catalog": 1
+   }
+  }
+ }
+}
